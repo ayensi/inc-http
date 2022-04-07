@@ -15,11 +15,7 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
 		return nil, errors.New("Couldn't make the request")
 	}
 
-	for header, value := range headers {
-		if len(value) > 0 {
-			request.Header.Set(header, value[0])
-		}
-	}
+	request.Header = c.getRequestHeaders(headers)
 
 	response, err := client.Do(request)
 
@@ -28,4 +24,19 @@ func (c *httpClient) do(method string, url string, headers http.Header, body int
 	}
 
 	return response, nil
+}
+func (c *httpClient) getRequestHeaders(headers http.Header) http.Header {
+	result := make(http.Header)
+	for header, value := range c.Headers {
+		if len(value) > 0 {
+			result.Set(header, value[0])
+		}
+	}
+
+	for header, value := range headers {
+		if len(value) > 0 {
+			result.Set(header, value[0])
+		}
+	}
+	return result
 }

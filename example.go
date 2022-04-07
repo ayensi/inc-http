@@ -7,11 +7,17 @@ import (
 	"net/http"
 )
 
-func main() {
+func getGithubClient() inc.HttpHelper {
 	client := inc.New()
-	headers := make(http.Header)
-	headers.Set("Authorization", "Bearer ABC-123")
-	response, err := client.GET("https://api.github.com", headers)
+	commonHeaders := make(http.Header)
+	commonHeaders.Set("Accept", "application/xml")
+	client.SetHeaders(commonHeaders)
+	return client
+}
+
+func main() {
+	client := getGithubClient()
+	response, err := client.GET("https://api.github.com", nil)
 
 	if err != nil {
 		panic(err)
